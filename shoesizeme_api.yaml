@@ -1,0 +1,488 @@
+swagger: '2.0'
+
+
+info:
+  version: "1.0"
+  title: ShoeSizeMe API public description
+  description: Description of the API used by the ShoeSizeMe Size Agent (internally referred to as Plugin v3). To see the Live Agent live, you can visit us at **https://shoesize.me**. For more info, feel free to contact us at **support@shoesize.me**
+host: shoesize.me
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+  /api/models/top_shoes:
+    get:
+      description: |
+        This endpoint returns a collection of the most popular shoes. This list can be customized on a per-client basis.
+      tags:
+        - Models
+      parameters:
+        - name: accept
+          in: header
+          description: Required header
+          required: true
+          type: string
+          format: string
+          default: "application/vnd.ssm.v3"
+
+        - name: shop_id
+          in: query
+          default: 1117
+          description: The unique ID number of the ShoeSizeMe client
+          required: true
+          type: integer
+        - name: gender
+          default: 0
+          in: query
+          description: The unique ID number representing the gender of the user - 0 for men, 1 for women
+          required: true
+          type: integer
+        - name: sid
+          default: '111-222-333-foobar'
+          in: query
+          description: A unique ID, generated for every single session, in order to track the user's interactions
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success. Returns an array of popular shoes.
+          schema:
+            type: array
+            items:
+              type: object
+              title: Top_shoe
+              properties:
+                brand:
+                  type: string
+                  description: The brand name of the shoe
+                brand_id:
+                  type: integer
+                  description: The unique ID number of the brand
+                category_id:
+                  type: integer
+                  description: The unique ID number of the category
+                id:
+                  type: integer
+                  description: The unique ID number of the top shoe
+                name:
+                  type: string
+                  description: The model name of the shoe
+                src:
+                  type: string
+                  description: The URL of the shoe picture, hosted on a CDN in PNG format
+        500:
+          description: Internal Server Error
+          
+  /api/brands/top_brands:
+    get:
+      description: |
+        This endpoint returns a collection of the most popular brands. This list can be customized on a per-client basis.
+      tags:
+        - Brands
+      parameters:
+        - name: accept
+          in: header
+          description: Required header
+          required: true
+          type: string
+          format: string
+          default: "application/vnd.ssm.v3"
+        - name: shop_id
+          default: 1117
+          in: query
+          description: The unique ID number of the ShoeSizeMe client
+          required: true
+          type: integer
+        - name: gender
+          default: 0
+          in: query
+          description: The unique ID number representing the gender of the user - 0 for men, 1 for women
+          required: true
+          type: integer
+        - name: sid
+          default: '111-222-333-foobar'
+          in: query
+          description: A unique ID, generated for every single session, in order to track the user's interactions
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success. Returns an array of popular brands.
+          schema:
+            type: array
+            items:
+            
+              title: Top_brand
+              type: object
+              properties:
+                id: 
+                  type: integer
+                  description: The unique ID number of the brand
+                name:
+                  type: string
+                  description: The brand name
+                src:
+                  type: string
+                  description: The URL of the brand logo picture, hosted on a CDN in PNG format
+        422:
+          description: Returns the following error message **No valid shop id provided** in case of an invalid shop_id
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: No valid shop id provided
+        500:
+          description: Internal Server Error
+          
+  /api/models/top_models:
+    get:
+      description: |
+        This endpoint returns a collection of the most popular shoes for one or more brands.
+      tags:
+        - Models
+      parameters:
+        - name: accept
+          in: header
+          description: Required header
+          required: true
+          type: string
+          format: string
+          default: "application/vnd.ssm.v3"
+        - name: shop_id
+          default: 1117
+          in: query
+          description: The unique ID number of the ShoeSizeMe client
+          required: true
+          type: integer
+        - name: gender
+          default: 0
+          in: query
+          description: The unique ID number representing the gender of the user - 0 for men, 1 for women
+          required: true
+          type: integer
+        - name: sid
+          default: '111-222-333-foobar'
+          in: query
+          description: A unique ID, generated for every single session, in order to track the user's interactions
+          required: true
+          type: string
+        - name: brand_ids[]
+          default: 1966
+          in: query
+          description: The unique ID number of the brand
+          required: true
+          type: integer
+      
+      responses:
+        200:
+          description: Success. Returns an array of popular shoes for one or more specific brands.
+          schema:
+            type: array
+            items:
+              title: Top_model
+              type: object
+              properties:
+                brand:
+                  type: string
+                  description: The brand name of the shoe
+                id:
+                  type: integer
+                  description: The unique ID number of the shoe
+                name:
+                  type: string
+                  description: The name of the model
+                src:
+                  type: string
+                  description: The URL of the shoe picture, hosted on a CDN in PNG format
+        422:
+          description: Returns the following error message **No valid shop id provided** in case of an invalid shop_id
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: No valid shop id provided
+        500:
+          description: Internal Server Error
+          
+  /api/brands:
+    get:
+      description: |
+        This endpoint returns a collection of brands.
+      tags:
+        - Brands
+      parameters:
+        - name: accept
+          in: header
+          description: Required header
+          required: true
+          type: string
+          format: string
+          default: "application/vnd.ssm.v3"
+        - name: shop_id
+          default: 1117
+          in: query
+          description: The unique ID number of the ShoeSizeMe client
+          required: true
+          type: integer
+        - name: gender
+          in: query
+          default: 0
+          description: The unique ID number representing the gender of the user - 0 for men, 1 for women
+          required: true
+          type: integer
+        - name: sid
+          default: '111-222-333-foobar'
+          in: query
+          description: A unique ID, generated for every single session, in order to track the user's interactions
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success. Returns an array of brands.
+          schema:
+            type: array
+            items:
+              title: Brand
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: 
+                    The unique ID number of the brand
+                name:
+                  type: string
+                  description: 
+                    The brand name of the shoe
+        422:
+          description: Returns the following error message **No valid shop id provided** in case of an invalid shop_id
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: No valid shop id provided
+        500:
+          description: Internal Server Error
+          
+  /api/models:
+    get:
+      description: |
+        This endpoint returns a collection of shoes for one or more brands.
+      tags:
+        - Models
+      parameters:
+        - name: accept
+          in: header
+          description: Required header
+          required: true
+          type: string
+          format: string
+          default: "application/vnd.ssm.v3"
+        - name: shop_id
+          in: query
+          default: 1117
+          description: The unique ID number of the ShoeSizeMe client
+          required: true
+          type: integer
+        - name: gender
+          in: query
+          default: 0
+          description: The unique ID number representing the gender of the user - 0 for men, 1 for women
+          required: true
+          type: integer
+        - name: sid
+          default: '111-222-333-foobar'
+          in: query
+          description: A unique ID, generated for every single session, in order to track the user's interactions
+          required: true
+          type: string
+        - name: brand_ids[]
+          in: query
+          default: 1966
+          description: The unique ID number of the brand
+          required: true
+          type: integer
+          
+      responses:
+        200:
+          description: Success. Returns an array of shoes
+          schema:
+            type: array
+            items:
+              title: Model
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: 
+                    The unique ID number of the shoe
+                name:
+                  type: string
+                  description: 
+                    The model name of the shoe
+        422:
+          description: Returns the following error message **No valid shop id provided** in case of an invalid shop_id
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: No valid shop id provided
+        500:
+          description: Internal Server Error
+          
+  /api/categories:
+    get:
+      description: |
+        This endpoint returns a collection of categories. Categories are meant to sort, in an easy and comprehensible way, all kind of different shoes.
+      tags:
+        - Categories
+      parameters:
+        - name: accept
+          in: header
+          description: Required header
+          required: true
+          type: string
+          format: string
+          default: "application/vnd.ssm.v3"
+        - name: shop_id
+          default: 1117
+          in: query
+          description: The unique ID number of the ShoeSizeMe client
+          required: true
+          type: integer
+        - name: gender
+          default: 0
+          in: query
+          description: The unique ID number representing the gender of the user - 0 for men, 1 for women
+          required: true
+          type: integer
+        - name: sid
+          default: '111-222-333-foobar'
+          in: query
+          description: A unique ID, generated for every single session, in order to track the user's interactions
+          required: true
+          type: string
+        - name: brand_ids[]
+          default: 1966
+          in: query
+          description: The unique ID number of the brand
+          required: true
+          type: integer
+
+      responses:
+        200:
+          description: Success. Returns an array of categories.
+          schema:
+            type: array
+            items:
+              title: Category
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: The unique ID number of the category
+                name:
+                  type: string
+                  description: The category name
+                src:
+                  type: string
+                  description: The URL of a picture that represents the category, hosted on a CDN in PNG format
+        422:
+          description: Returns the following error message **No valid shop id provided** in case of an invalid shop_id
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: No valid shop id provided
+        500:
+          description: Internal Server Error
+          
+  /api/sizes:
+    get:
+      description: |
+        This endpoint returns a collection of sizes for a shoe. Optional param is **model_id**.
+      parameters:
+        - name: accept
+          in: header
+          description: Required header
+          required: true
+          type: string
+          format: string
+          default: "application/vnd.ssm.v3"
+        - name: shop_id
+          default: 1117
+          in: query
+          description: The unique ID number of the ShoeSizeMe client
+          required: true
+          type: integer
+        - name: gender
+          default: 0
+          in: query
+          description: The unique ID number representing the gender of the user - 0 for men, 1 for women
+          required: true
+          type: integer
+        - name: sid
+          default: '111-222-333-foobar'
+          in: query
+          description: A unique ID, generated for every single session, in order to track the user's interactions
+          required: true
+          type: string
+          
+        - name: brand_ids[]
+          default: 1966
+          in: query
+          description:  The unique ID number of the brand. Used if no model ID is provided.
+          required: true
+          type: integer
+          
+        - name: model_id
+          default: 861089
+          in: query
+          description: The unique ID number of the shoe.
+          required: false
+          type: integer
+      tags:
+        - Sizes
+      responses:
+        200:
+          description: Success. Returns an array of sizes
+          schema:
+            type: array
+            items: 
+              title: Size
+              type: object
+              properties:
+                eu:
+                  type: number
+                  description: 
+                    The size converted in the EU size scale
+                uk: 
+                  type: number
+                  description: 
+                    The size converted in the UK size scale
+                us_m:
+                  type: number
+                  description: 
+                    The size converted in the US men size scale - only if a US men size actually exists for the shoe
+                us_w:
+                  type: number
+                  description: 
+                    The size converted in the US women size scale - only if a US women size actually exists for the shoe
+        422:
+          description: Returns the following error message **No valid shop id provided** in case of an invalid shop_id
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: No valid shop id provided
+        500:
+          description: Internal Server Error
